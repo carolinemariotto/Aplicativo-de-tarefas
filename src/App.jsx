@@ -1,18 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Tasks from "./components/Tasks";
 import AddTask from "./components/AddTask"; // Importando AddTask
 import { v4 as uuidv4 } from "uuid"; // Corrigindo importação do uuid
 
 function App() {
   const [tasks, setTasks] = useState([
-    { id: 1, title: "Estudar programação", isCompleted: false },
-    { id: 2, title: "Fazer batatinha frita no air fryer", isCompleted: false },
-    { id: 3, title: "Ler um livro", isCompleted: false },
+    { id: 1, title: "Estudar programação", description: "", isCompleted: false },
+    { id: 2, title: "Fazer batatinha frita no air fryer", description: "", isCompleted: false },
+    { id: 3, title: "Ler um livro", description: "", isCompleted: false },
   ]);
 
+  // Carrega as tarefas do localStorage ao montar o componente
   useEffect(() => {
-    localStorage.setItem("tasks");
+    const storedTasks = JSON.parse(localStorage.getItem("tasks"));
+    if (storedTasks) {
+      setTasks(storedTasks);
+    }
+  }, []);
+
+  // Salva as tarefas no localStorage sempre que elas mudarem
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
+
   // Alterna o estado de conclusão da tarefa
   const onTaskClick = (taskId) => {
     const updatedTasks = tasks.map((task) =>
